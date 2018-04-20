@@ -42,7 +42,7 @@ public class GooView extends View {
     private boolean isOutOfRange = false;
 
     private OnDisappearListener mListener;
-    private int mStatusBarHeight;
+    private int mStatusBarHeight = 0;
 
     /**
      * dragPoint拖出mMaxDistance范围后，重置dragPoint范围，超出消失，否则重置
@@ -271,8 +271,10 @@ public class GooView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.save();
-        //去除状态栏高度偏差
-        canvas.translate(0, -mStatusBarHeight);
+        if (mStatusBarHeight != 0) {
+            //去除状态栏高度偏差
+            canvas.translate(0, -mStatusBarHeight);
+        }
         if (!isOutOfRange) {
             drawGooPath(canvas);
         }

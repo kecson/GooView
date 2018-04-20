@@ -7,6 +7,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v4.view.MotionEventCompat;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -44,7 +45,7 @@ public class GooViewListener implements OnTouchListener, OnDisappearListener {
         mWm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         mParams = new WindowManager.LayoutParams();
         mParams.format = PixelFormat.TRANSLUCENT;//使窗口支持透明度
-
+        mParams.gravity = Gravity.CENTER;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             mParams.flags = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
         }
@@ -63,16 +64,24 @@ public class GooViewListener implements OnTouchListener, OnDisappearListener {
 
             int[] points = new int[2];
             //获取pointLayout在屏幕中的位置（layout的左上角坐标）
-            pointLayout.getLocationInWindow(points);
+            pointLayout.getLocationOnScreen(points);
+//            int[] outLocation = new int[2];
+//            pointLayout.getLocationInWindow(outLocation);
+//            Log.e("gooview", String.format("getLocationOnScreen x=%s, y=%s ", points[0], points[1]));
+//            Log.e("gooview", String.format("getLocationInWindow x=%s, y=%s ", outLocation[0], outLocation[1]));
             //获取初始小红点中心坐标
             int x = points[0] + pointLayout.getWidth() / 2;
             int y = points[1] + pointLayout.getHeight() / 2;
             // 初始化当前点击的item的信息，数字及坐标
-            mGooView.setStatusBarHeight(Utils.getStatusBarHeight(v));
+//            int statusBarHeight = Utils.getStatusBarHeight(v);
+//            mGooView.setStatusBarHeight(statusBarHeight);
             mGooView.setNumber(number);
             mGooView.initCenter(x, y);
+//            Log.e("gooview", String.format("x=%s, y=%s , satausbarHeight=%s", x, y, statusBarHeight));
             //设置当前GooView消失监听
             mGooView.setOnDisappearListener(this);
+            mParams.x = points[0];
+            mParams.y = points[1];
             // 添加当前GooView到WindowManager
             mWm.addView(mGooView, mParams);
             pointLayout.setVisibility(View.INVISIBLE);
